@@ -1,13 +1,16 @@
 {
   "name": "ember-circleci",
   "version": "0.0.0",
-  "description": "The default blueprint for ember-cli addons.",
+  "description": "CircleCI configuration generator for your Ember projects.",
   "keywords": [
     "ember-addon"
   ],
-  "repository": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GreatWizard/ember-circleci.git"
+  },
   "license": "MIT",
-  "author": "",
+  "author": "Guillaume Gérard <guillaume.gerard88@gmail.com>",
   "directories": {
     "doc": "doc",
     "test": "tests"
