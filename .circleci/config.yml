@@ -26,7 +26,7 @@ jobs:
             - ember-circleci-node10-v1-{{ checksum "yarn.lock" }}
       - run:
           name: Yarn Install
-          command: yarn install --non-interactive
+          command: yarn install --non-interactive --pure-lockfile
       - save_cache:
           key: ember-circleci-node10-v1-{{ checksum "yarn.lock" }}
           paths:
