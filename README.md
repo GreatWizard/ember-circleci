@@ -18,14 +18,8 @@ ember install ember-circleci
 ## Usage
 
 ```sh
-ember g circleci <app_name> [--yarn] [--addon]
+ember g circleci
 ```
-
-### Options
-
-- `app_name`: The name used in the configuration.
-- `--yarn`: Use `yarn` instead of `npm` for commands.
-- `--addon`: Generate configuration for addon.
 
 ## Generated configuration
 
