@@ -1,16 +1,21 @@
 /* eslint-env node */
-const stringUtil = require("ember-cli-string-utils");
+const path = require('path')
+const { existsSync } = require('fs')
+const stringUtil = require("ember-cli-string-utils")
 
 module.exports = {
   description: "Ember-CircleCI blueprint",
 
-  locals(options) {
-    let name = stringUtil.dasherize(options.entity.name);
-    let { addon, yarn } = options;
+  normalizeEntityName() {},
+  locals({ project }) {
+    let { name, keywords = [] } = project.pkg
+    let isAddon = keywords.includes('ember-addon')
+    let hasYarn = existsSync(path.join(project.root, 'yarn.lock'))
+
     return {
-      name,
-      addon,
-      yarn
-    };
+      name: stringUtil.dasherize(name),
+      yarn: hasYarn,
+      addon: isAddon
+    }
   }
-};
+}
