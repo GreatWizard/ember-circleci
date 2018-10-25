@@ -15,17 +15,13 @@ In addition, it uses parallel jobs to optimize CI time.
 ember install ember-circleci
 ```
 
-## Usage
-
-```sh
-ember g circleci
-```
-
 ## Generated configuration
 
 This addon generates the `.circleci/config.yml` file.
-Lint and Tests jobs are starts as parallel jobs.
-After the install dependencies job, the `node_modules` folder is saved as cache for future installations.
+Lint and Tests jobs are started as parallel jobs.
+After the install dependencies job, the `node_modules` folder is cached by CircleCI to speed up the next runs.
+
+:bulb: If you later need to regenerate the `.circleci/config.yml` file, run `ember g ember-circle-ci`.
 
 ### Configuration for application
 
