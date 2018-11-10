@@ -3,11 +3,13 @@
   "version": "1.0.2",
   "description": "CircleCI configuration generator for your Ember projects.",
   "keywords": [
-    "ember-addon"
+    "ember-addon",
+    "circleci",
+    "ember-cli"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/GreatWizard/ember-circleci.git"
+    "url": "git://github.com/GreatWizard/ember-circleci.git"
   },
   "license": "MIT",
   "author": "Guillaume Gérard <guillaume.gerard88@gmail.com>",
