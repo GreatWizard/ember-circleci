@@ -62,16 +62,6 @@ jobs:
           name: Run Tests
           command: <% if (yarn) { %>yarn test<% } else { %>npm run test<% } %>
 <% if (addon) { %>
-  test_lts_2_16:
-    <<: *defaults
-    steps:
-      - attach_workspace:
-          at: .
-      - run: echo 'export PATH=~/<%= name %>/node_modules/.bin:$PATH' >> $BASH_ENV
-      - run:
-          name: Run Tests Ember LTS 2.16
-          command: ember try:one ember-lts-2.16 --skip-cleanup=true
-
   test_lts_2_18:
     <<: *defaults
     steps:
@@ -81,6 +71,16 @@ jobs:
       - run:
           name: Run Tests Ember LTS 2.18
           command: ember try:one ember-lts-2.18 --skip-cleanup=true
+
+  test_lts_3_4:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: .
+      - run: echo 'export PATH=~/<%= name %>/node_modules/.bin:$PATH' >> $BASH_ENV
+      - run:
+          name: Run Tests Ember LTS 3.4
+          command: ember try:one ember-lts-3.4 --skip-cleanup=true
 
   test_release:
     <<: *defaults
@@ -136,10 +136,10 @@ workflows:
       - test:
           requires:
             - install_dependencies<% if (addon) { %>
-      - test_lts_2_16:
+      - test_lts_2_18:
           requires:
             - install_dependencies
-      - test_lts_2_18:
+      - test_lts_3_4:
           requires:
             - install_dependencies
       - test_release:
