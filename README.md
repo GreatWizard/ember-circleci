@@ -35,28 +35,12 @@ It will provides a `test_and_build` workflow, as follows:
 
 It will provides a `test_matrix` workflow, as follows:
 
-![checkout code / install dependencies / run lint (js and hbs) / run tests (default, LTS 2.16, LTS 2.18, release, beta, canary and default with jquery)](/doc/workflow-addon.png)
-
-## Contributing
-
-### Installation
-
-- `git clone <repository-url>`
-- `cd ember-circleci`
-- `yarn install`
-
-### Linting
-
-- `yarn lint:hbs`
-- `yarn lint:js`
-- `yarn lint:js --fix`
-
-### Running tests
-
-- `ember test` – Runs the test suite on the current Ember version
-- `ember test --server` – Runs the test suite in "watch mode"
-- `ember try:each` – Runs the test suite against multiple Ember versions
+![checkout code / install dependencies / run lint (js and hbs) / run tests (default, LTS 2.18, LTS 3.4, release, beta, canary and default with jquery)](/doc/workflow-addon.png)
 
 ## License
+
+---
+
+> > > > > > > 27f0eba... message
 
 This project is licensed under the [MIT License](LICENSE.md).
