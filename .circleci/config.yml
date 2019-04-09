@@ -41,7 +41,6 @@ jobs:
     steps:
       - attach_workspace:
           at: .
-      - run: echo 'export PATH=~/ember-circleci/node_modules/.bin:$PATH' >> $BASH_ENV
       - run:
           name: Lint Handlebars
           command: yarn lint:hbs
@@ -54,70 +53,63 @@ jobs:
     steps:
       - attach_workspace:
           at: .
-      - run: echo 'export PATH=~/ember-circleci/node_modules/.bin:$PATH' >> $BASH_ENV
       - run:
           name: Run Tests
-          command: yarn test
+          command: npx ember try:one ember-default --skip-cleanup=true
 
   test_lts_2_18:
     <<: *defaults
     steps:
       - attach_workspace:
           at: .
-      - run: echo 'export PATH=~/ember-circleci/node_modules/.bin:$PATH' >> $BASH_ENV
       - run:
           name: Run Tests Ember LTS 2.18
-          command: ember try:one ember-lts-2.18 --skip-cleanup=true
+          command: npx ember try:one ember-lts-2.18 --skip-cleanup=true
 
   test_lts_3_4:
     <<: *defaults
     steps:
       - attach_workspace:
           at: .
-      - run: echo 'export PATH=~/ember-circleci/node_modules/.bin:$PATH' >> $BASH_ENV
       - run:
           name: Run Tests Ember LTS 3.4
-          command: ember try:one ember-lts-3.4 --skip-cleanup=true
+          command: npx ember try:one ember-lts-3.4 --skip-cleanup=true
 
   test_release:
     <<: *defaults
     steps:
       - attach_workspace:
           at: .
-      - run: echo 'export PATH=~/ember-circleci/node_modules/.bin:$PATH' >> $BASH_ENV
       - run:
           name: Run Tests Ember Release
-          command: ember try:one ember-release --skip-cleanup=true
+          command: npx ember try:one ember-release --skip-cleanup=true
 
   test_beta:
     <<: *defaults
     steps:
       - attach_workspace:
           at: .
-      - run: echo 'export PATH=~/ember-circleci/node_modules/.bin:$PATH' >> $BASH_ENV
       - run:
           name: Run Tests Ember Beta
-          command: ember try:one ember-beta --skip-cleanup=true
+          command: npx ember try:one ember-beta --skip-cleanup=true
 
   test_canary:
     <<: *defaults
     steps:
       - attach_workspace:
           at: .
-      - run: echo 'export PATH=~/ember-circleci/node_modules/.bin:$PATH' >> $BASH_ENV
       - run:
           name: Run Tests Ember Canary
-          command: ember try:one ember-canary --skip-cleanup=true
+          command: npx ember try:one ember-canary --skip-cleanup=true
 
   test_default_with_jquery:
     <<: *defaults
     steps:
       - attach_workspace:
           at: .
-      - run: echo 'export PATH=~/ember-circleci/node_modules/.bin:$PATH' >> $BASH_ENV
       - run:
           name: Run Tests Ember Default With jQuery
-          command: ember try:one ember-default-with-jquery --skip-cleanup=true
+          command: npx ember try:one ember-default-with-jquery --skip-cleanup=true
 
 workflows:
   version: 2

@@ -9,8 +9,9 @@ module.exports = function() {
     getChannelURL("canary")
   ]).then(urls => {
     return {
-      useYarn: true,
-      scenarios: [
+<% if (exam) { %>      command: `ember exam --split=${process.env.CIRCLE_NODE_TOTAL} --partition=${Number(process.env.CIRCLE_NODE_INDEX) + 1} --parallel --load-balance`,
+<% } if (yarn) { %>      useYarn: true,
+<% } %>      scenarios: [
         {
           name: "ember-lts-2.18",
           env: {

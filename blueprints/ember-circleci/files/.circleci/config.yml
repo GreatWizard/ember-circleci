@@ -44,7 +44,6 @@ jobs:
     steps:
       - attach_workspace:
           at: .
-      - run: echo 'export PATH=~/<%= name %>/node_modules/.bin:$PATH' >> $BASH_ENV
       - run:
           name: Lint Handlebars
           command: <% if (yarn) { %>yarn lint:hbs<% } else { %>npm run lint:hbs<% } %>
@@ -54,73 +53,73 @@ jobs:
 
   test:
     <<: *defaults
-    steps:
+<% if (exam) { %>    parallelism: <%= parallel %>
+<% } %>    steps:
       - attach_workspace:
           at: .
-      - run: echo 'export PATH=~/<%= name %>/node_modules/.bin:$PATH' >> $BASH_ENV
       - run:
           name: Run Tests
-          command: <% if (yarn) { %>yarn test<% } else { %>npm run test<% } %>
+          command: <% if (addon) { %>npx ember try:one ember-default --skip-cleanup=true<% } else if (exam) { %>npx ember exam --split=$CIRCLE_NODE_TOTAL --partition=`expr $CIRCLE_NODE_INDEX + 1` --parallel --load-balance<% } else if (yarn) { %>yarn test<% } else { %>npm run test<% } %>
 <% if (addon) { %>
   test_lts_2_18:
     <<: *defaults
-    steps:
+<% if (exam) { %>    parallelism: <%= parallel %>
+<% } %>    steps:
       - attach_workspace:
           at: .
-      - run: echo 'export PATH=~/<%= name %>/node_modules/.bin:$PATH' >> $BASH_ENV
       - run:
           name: Run Tests Ember LTS 2.18
-          command: ember try:one ember-lts-2.18 --skip-cleanup=true
+          command: npx ember try:one ember-lts-2.18 --skip-cleanup=true
 
   test_lts_3_4:
     <<: *defaults
-    steps:
+<% if (exam) { %>    parallelism: <%= parallel %>
+<% } %>    steps:
       - attach_workspace:
           at: .
-      - run: echo 'export PATH=~/<%= name %>/node_modules/.bin:$PATH' >> $BASH_ENV
       - run:
           name: Run Tests Ember LTS 3.4
-          command: ember try:one ember-lts-3.4 --skip-cleanup=true
+          command: npx ember try:one ember-lts-3.4 --skip-cleanup=true
 
   test_release:
     <<: *defaults
-    steps:
+<% if (exam) { %>    parallelism: <%= parallel %>
+<% } %>    steps:
       - attach_workspace:
           at: .
-      - run: echo 'export PATH=~/<%= name %>/node_modules/.bin:$PATH' >> $BASH_ENV
       - run:
           name: Run Tests Ember Release
-          command: ember try:one ember-release --skip-cleanup=true
+          command: npx ember try:one ember-release --skip-cleanup=true
 
   test_beta:
     <<: *defaults
-    steps:
+<% if (exam) { %>    parallelism: <%= parallel %>
+<% } %>    steps:
       - attach_workspace:
           at: .
-      - run: echo 'export PATH=~/<%= name %>/node_modules/.bin:$PATH' >> $BASH_ENV
       - run:
           name: Run Tests Ember Beta
-          command: ember try:one ember-beta --skip-cleanup=true
+          command: npx ember try:one ember-beta --skip-cleanup=true
 
   test_canary:
     <<: *defaults
-    steps:
+<% if (exam) { %>    parallelism: <%= parallel %>
+<% } %>    steps:
       - attach_workspace:
           at: .
-      - run: echo 'export PATH=~/<%= name %>/node_modules/.bin:$PATH' >> $BASH_ENV
       - run:
           name: Run Tests Ember Canary
-          command: ember try:one ember-canary --skip-cleanup=true
+          command: npx ember try:one ember-canary --skip-cleanup=true
 
   test_default_with_jquery:
     <<: *defaults
-    steps:
+<% if (exam) { %>    parallelism: <%= parallel %>
+<% } %>    steps:
       - attach_workspace:
           at: .
-      - run: echo 'export PATH=~/<%= name %>/node_modules/.bin:$PATH' >> $BASH_ENV
       - run:
           name: Run Tests Ember Default With jQuery
-          command: ember try:one ember-default-with-jquery --skip-cleanup=true
+          command: npx ember try:one ember-default-with-jquery --skip-cleanup=true
 <% } %>
 workflows:
   version: 2
