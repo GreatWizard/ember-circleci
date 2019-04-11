@@ -17,13 +17,25 @@ In addition, it uses parallel jobs to optimize CI time.
 ember install ember-circleci
 ```
 
+## Usage
+
+```
+ember g ember-circleci [--exam=X]
+```
+
+### Options
+
+- `--exam=X`: Use [`ember-exam`](https://github.com/ember-cli/ember-exam) to run tests in parallel, X is the number of parallel processes (default value is 4)
+
 ## Generated configuration
 
 This addon generates the `.circleci/config.yml` file.
 Lint and Tests jobs are started as parallel jobs.
+If you activate ember-exam, it provides the ability to split, parallelize, and load-balance your test suite.
+
 After the install dependencies job, the `node_modules` folder is cached by CircleCI to speed up the next runs.
 
-:bulb: If you later need to regenerate the `.circleci/config.yml` file, run `ember g ember-circle-ci`.
+:bulb: If you later need to regenerate the `.circleci/config.yml` file, run `ember g ember-circle-ci [--exam=X]`.
 
 ### Configuration for application
 
