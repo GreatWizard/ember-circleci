@@ -49,6 +49,10 @@ It will provides a `test_matrix` workflow, as follows:
 
 ![checkout code / install dependencies / run lint (js and hbs) / run tests (default, LTS 2.18, LTS 3.4, release, beta, canary and default with jquery)](/doc/workflow-addon.png)
 
+## Contributing
+
+See the [Contributing](CONTRIBUTING.md) guide for details.
+
 ## License
 
 This project is licensed under the [MIT License](LICENSE.md).
