@@ -13,14 +13,28 @@ module.exports = {
 
   locals(options) {
     let {
+      addon,
       exam,
       project: {
         root,
         pkg: { name, keywords = [] }
-      }
+      },
+      yarn
     } = options;
     isAddon = keywords.includes("ember-addon");
+    if (isAddon && addon !== undefined && addon !== true) {
+      isAddon = false;
+    }
+    if (!isAddon && addon === true) {
+      isAddon = true;
+    }
     let hasYarn = existsSync(path.join(root, "yarn.lock"));
+    if (hasYarn && yarn !== undefined && yarn !== true) {
+      hasYarn = false;
+    }
+    if (!hasYarn && yarn === true) {
+      hasYarn = true;
+    }
     hasExam = exam !== undefined;
     return {
       name: stringUtil.dasherize(name),

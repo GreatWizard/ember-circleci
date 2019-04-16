@@ -51,8 +51,8 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: Run Tests
-          command: yarn test
+          name: Run Node Tests
+          command: yes | yarn nodetest
 
 workflows:
   version: 2
