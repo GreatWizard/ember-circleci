@@ -42,9 +42,6 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: Lint Handlebars
-          command: yarn lint:hbs
-      - run:
           name: Lint JavaScript
           command: yarn lint:js
 
@@ -55,61 +52,7 @@ jobs:
           at: .
       - run:
           name: Run Tests
-          command: npx ember try:one ember-default --skip-cleanup=true
-
-  test_lts_2_18:
-    <<: *defaults
-    steps:
-      - attach_workspace:
-          at: .
-      - run:
-          name: Run Tests Ember LTS 2.18
-          command: npx ember try:one ember-lts-2.18 --skip-cleanup=true
-
-  test_lts_3_4:
-    <<: *defaults
-    steps:
-      - attach_workspace:
-          at: .
-      - run:
-          name: Run Tests Ember LTS 3.4
-          command: npx ember try:one ember-lts-3.4 --skip-cleanup=true
-
-  test_release:
-    <<: *defaults
-    steps:
-      - attach_workspace:
-          at: .
-      - run:
-          name: Run Tests Ember Release
-          command: npx ember try:one ember-release --skip-cleanup=true
-
-  test_beta:
-    <<: *defaults
-    steps:
-      - attach_workspace:
-          at: .
-      - run:
-          name: Run Tests Ember Beta
-          command: npx ember try:one ember-beta --skip-cleanup=true
-
-  test_canary:
-    <<: *defaults
-    steps:
-      - attach_workspace:
-          at: .
-      - run:
-          name: Run Tests Ember Canary
-          command: npx ember try:one ember-canary --skip-cleanup=true
-
-  test_default_with_jquery:
-    <<: *defaults
-    steps:
-      - attach_workspace:
-          at: .
-      - run:
-          name: Run Tests Ember Default With jQuery
-          command: npx ember try:one ember-default-with-jquery --skip-cleanup=true
+          command: yarn test
 
 workflows:
   version: 2
@@ -123,23 +66,5 @@ workflows:
           requires:
             - install_dependencies
       - test:
-          requires:
-            - install_dependencies
-      - test_lts_2_18:
-          requires:
-            - install_dependencies
-      - test_lts_3_4:
-          requires:
-            - install_dependencies
-      - test_release:
-          requires:
-            - install_dependencies
-      - test_beta:
-          requires:
-            - install_dependencies
-      - test_canary:
-          requires:
-            - install_dependencies
-      - test_default_with_jquery:
           requires:
             - install_dependencies
