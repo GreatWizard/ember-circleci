@@ -53,7 +53,7 @@ jobs:
 
   test:
     <<: *defaults
-<% if (exam) { %>    parallelism: <%= parallel %>
+<% if (addon && exam) { %>    parallelism: <%= parallel %>
 <% } %>    steps:
       - attach_workspace:
           at: .
@@ -63,7 +63,7 @@ jobs:
 <% if (addon) { %>
   test_lts_2_18:
     <<: *defaults
-<% if (exam) { %>    parallelism: <%= parallel %>
+<% if (addon && exam) { %>    parallelism: <%= parallel %>
 <% } %>    steps:
       - attach_workspace:
           at: .
@@ -73,7 +73,7 @@ jobs:
 
   test_lts_3_4:
     <<: *defaults
-<% if (exam) { %>    parallelism: <%= parallel %>
+<% if (addon && exam) { %>    parallelism: <%= parallel %>
 <% } %>    steps:
       - attach_workspace:
           at: .
@@ -83,7 +83,7 @@ jobs:
 
   test_release:
     <<: *defaults
-<% if (exam) { %>    parallelism: <%= parallel %>
+<% if (addon && exam) { %>    parallelism: <%= parallel %>
 <% } %>    steps:
       - attach_workspace:
           at: .
@@ -93,7 +93,7 @@ jobs:
 
   test_beta:
     <<: *defaults
-<% if (exam) { %>    parallelism: <%= parallel %>
+<% if (addon && exam) { %>    parallelism: <%= parallel %>
 <% } %>    steps:
       - attach_workspace:
           at: .
@@ -103,7 +103,7 @@ jobs:
 
   test_canary:
     <<: *defaults
-<% if (exam) { %>    parallelism: <%= parallel %>
+<% if (addon && exam) { %>    parallelism: <%= parallel %>
 <% } %>    steps:
       - attach_workspace:
           at: .
@@ -113,7 +113,7 @@ jobs:
 
   test_default_with_jquery:
     <<: *defaults
-<% if (exam) { %>    parallelism: <%= parallel %>
+<% if (addon && exam) { %>    parallelism: <%= parallel %>
 <% } %>    steps:
       - attach_workspace:
           at: .

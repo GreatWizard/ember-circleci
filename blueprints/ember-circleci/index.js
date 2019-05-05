@@ -11,17 +11,23 @@ module.exports = {
 
   normalizeEntityName() {},
 
-  locals({ exam, project }) {
-    let { name, keywords = [] } = project.pkg;
+  locals(options) {
+    let {
+      exam,
+      project: {
+        root,
+        pkg: { name, keywords = [] }
+      }
+    } = options;
     isAddon = keywords.includes("ember-addon");
-    let hasYarn = existsSync(path.join(project.root, "yarn.lock"));
+    let hasYarn = existsSync(path.join(root, "yarn.lock"));
     hasExam = exam !== undefined;
     return {
       name: stringUtil.dasherize(name),
       yarn: hasYarn,
       addon: isAddon,
       exam: hasExam,
-      parallel: exam ? exam : 4
+      parallel: !isNaN(Number.parseInt(exam)) ? exam : 4
     };
   },
 
@@ -34,8 +40,8 @@ module.exports = {
   },
 
   afterInstall() {
-    if (hasExam) {
-      //return this.addPackagesToProject([{ name: "ember-exam" }]);
+    if (isAddon && hasExam) {
+      return this.addPackageToProject("ember-exam");
     }
   }
 };
