@@ -45,6 +45,14 @@ module.exports = {
           // add your custom rules and overrides for node files here
         }
       )
+    },
+    {
+      files: ["node-tests/**/*.js"],
+      env: {
+        browser: false,
+        node: true,
+        mocha: true
+      }
     }
   ]
 };
