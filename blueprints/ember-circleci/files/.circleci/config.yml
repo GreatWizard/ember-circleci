@@ -46,10 +46,10 @@ jobs:
           at: .
       - run:
           name: Lint Handlebars
-          command: <% if (yarn) { %>yarn lint:hbs<% } else { %>npm run lint:hbs<% } %>
+          command: <% if (yarn) { %>yarn<% } else { %>npm run<% } %> lint:hbs
       - run:
           name: Lint JavaScript
-          command: <% if (yarn) { %>yarn lint:js<% } else { %>npm run lint:js<% } %>
+          command: <% if (yarn) { %>yarn<% } else { %>npm run<% } %> lint:js
 
   test:
     <<: *defaults
@@ -59,7 +59,7 @@ jobs:
           at: .
       - run:
           name: Run Tests
-          command: <% if (addon) { %>npx ember try:one ember-default --skip-cleanup=true<% } else if (exam) { %>npx ember exam --split=$CIRCLE_NODE_TOTAL --partition=`expr $CIRCLE_NODE_INDEX + 1` --parallel --load-balance<% } else if (yarn) { %>yarn test<% } else { %>npm run test<% } %>
+          command: <% if (addon) { %><% if (yarn) { %>yarn<% } else { %>npx<% } %> ember try:one ember-default --skip-cleanup=true<% } else if (exam) { %><% if (yarn) { %>yarn<% } else { %>npx<% } %> ember exam --split=$CIRCLE_NODE_TOTAL --partition=`expr $CIRCLE_NODE_INDEX + 1` --parallel --load-balance<% } else if (yarn) { %>yarn test<% } else { %>npm run test<% } %>
 <% if (addon) { %>
   test_lts_2_18:
     <<: *defaults
@@ -69,7 +69,7 @@ jobs:
           at: .
       - run:
           name: Run Tests Ember LTS 2.18
-          command: npx ember try:one ember-lts-2.18 --skip-cleanup=true
+          command: <% if (yarn) { %>yarn<% } else { %>npx<% } %> ember try:one ember-lts-2.18 --skip-cleanup=true
 
   test_lts_3_4:
     <<: *defaults
@@ -79,7 +79,7 @@ jobs:
           at: .
       - run:
           name: Run Tests Ember LTS 3.4
-          command: npx ember try:one ember-lts-3.4 --skip-cleanup=true
+          command: <% if (yarn) { %>yarn<% } else { %>npx<% } %> ember try:one ember-lts-3.4 --skip-cleanup=true
 
   test_release:
     <<: *defaults
@@ -89,7 +89,7 @@ jobs:
           at: .
       - run:
           name: Run Tests Ember Release
-          command: npx ember try:one ember-release --skip-cleanup=true
+          command: <% if (yarn) { %>yarn<% } else { %>npx<% } %> ember try:one ember-release --skip-cleanup=true
 
   test_beta:
     <<: *defaults
@@ -99,7 +99,7 @@ jobs:
           at: .
       - run:
           name: Run Tests Ember Beta
-          command: npx ember try:one ember-beta --skip-cleanup=true
+          command: <% if (yarn) { %>yarn<% } else { %>npx<% } %> ember try:one ember-beta --skip-cleanup=true
 
   test_canary:
     <<: *defaults
@@ -109,7 +109,7 @@ jobs:
           at: .
       - run:
           name: Run Tests Ember Canary
-          command: npx ember try:one ember-canary --skip-cleanup=true
+          command: <% if (yarn) { %>yarn<% } else { %>npx<% } %> ember try:one ember-canary --skip-cleanup=true
 
   test_default_with_jquery:
     <<: *defaults
@@ -119,7 +119,7 @@ jobs:
           at: .
       - run:
           name: Run Tests Ember Default With jQuery
-          command: npx ember try:one ember-default-with-jquery --skip-cleanup=true
+          command: <% if (yarn) { %>yarn<% } else { %>npx<% } %> ember try:one ember-default-with-jquery --skip-cleanup=true
 <% } %>
 workflows:
   version: 2
