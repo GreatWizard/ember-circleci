@@ -1,6 +1,6 @@
 {
   "name": "ember-circleci",
-  "version": "1.3.3",
+  "version": "1.4.0",
   "description": "CircleCI configuration generator for your Ember projects.",
   "keywords": [
     "ember-addon",
