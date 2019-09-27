@@ -61,16 +61,6 @@ jobs:
           name: Run Tests
           command: <% if (addon) { %><% if (yarn) { %>yarn<% } else { %>npx<% } %> ember try:one ember-default --skip-cleanup=true<% } else if (exam) { %><% if (yarn) { %>yarn<% } else { %>npx<% } %> ember exam --split=$CIRCLE_NODE_TOTAL --partition=`expr $CIRCLE_NODE_INDEX + 1` --parallel --load-balance<% } else if (yarn) { %>yarn test<% } else { %>npm run test<% } %>
 <% if (addon) { %>
-  test_lts_2_18:
-    <<: *defaults
-<% if (addon && exam) { %>    parallelism: <%= parallel %>
-<% } %>    steps:
-      - attach_workspace:
-          at: .
-      - run:
-          name: Run Tests Ember LTS 2.18
-          command: <% if (yarn) { %>yarn<% } else { %>npx<% } %> ember try:one ember-lts-2.18 --skip-cleanup=true
-
   test_lts_3_4:
     <<: *defaults
 <% if (addon && exam) { %>    parallelism: <%= parallel %>
@@ -80,6 +70,16 @@ jobs:
       - run:
           name: Run Tests Ember LTS 3.4
           command: <% if (yarn) { %>yarn<% } else { %>npx<% } %> ember try:one ember-lts-3.4 --skip-cleanup=true
+
+  test_lts_3_8:
+    <<: *defaults
+<% if (addon && exam) { %>    parallelism: <%= parallel %>
+<% } %>    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Run Tests Ember LTS 3.8
+          command: <% if (yarn) { %>yarn<% } else { %>npx<% } %> ember try:one ember-lts-3.8 --skip-cleanup=true
 
   test_release:
     <<: *defaults
@@ -135,10 +135,10 @@ workflows:
       - test:
           requires:
             - install_dependencies<% if (addon) { %>
-      - test_lts_2_18:
+      - test_lts_3_4:
           requires:
             - install_dependencies
-      - test_lts_3_4:
+      - test_lts_3_8:
           requires:
             - install_dependencies
       - test_release:
