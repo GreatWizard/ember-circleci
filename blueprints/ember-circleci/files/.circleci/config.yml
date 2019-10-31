@@ -53,7 +53,7 @@ jobs:
 
   test:
     <<: *defaults
-<% if (addon && exam) { %>    parallelism: <%= parallel %>
+<% if (exam) { %>    parallelism: <%= parallel %>
 <% } %>    steps:
       - attach_workspace:
           at: .
