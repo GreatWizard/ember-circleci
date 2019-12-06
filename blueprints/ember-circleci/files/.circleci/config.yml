@@ -11,7 +11,10 @@ jobs:
     <<: *defaults
     steps:
       - checkout
-      - persist_to_workspace:
+<% if (exam === false) { %>      - run:
+          name: Generate reports folder
+          run: mkdir -p ./reports
+<% } %>      - persist_to_workspace:
           root: .
           paths:
             - .
@@ -60,6 +63,11 @@ jobs:
       - run:
           name: Run Tests
           command: <% if (addon) { %><% if (yarn) { %>yarn<% } else { %>npx<% } %> ember try:one ember-default --skip-cleanup=true<% } else if (exam) { %><% if (yarn) { %>yarn<% } else { %>npx<% } %> ember exam --split=$CIRCLE_NODE_TOTAL --partition=`expr $CIRCLE_NODE_INDEX + 1` --parallel --load-balance<% } else if (yarn) { %>yarn test<% } else { %>npm run test<% } %>
+<% if (exam === false) { %>      - store_test_results:
+          path: './reports'
+      - store_artifacts:
+          path: './reports'
+<% } %>
 <% if (addon) { %>
   test_lts_3_4:
     <<: *defaults
@@ -70,6 +78,11 @@ jobs:
       - run:
           name: Run Tests Ember LTS 3.4
           command: <% if (yarn) { %>yarn<% } else { %>npx<% } %> ember try:one ember-lts-3.4 --skip-cleanup=true
+<% if (exam === false) { %>      - store_test_results:
+          path: './reports'
+      - store_artifacts:
+          path: './reports'
+<% } %>
 
   test_lts_3_8:
     <<: *defaults
@@ -80,6 +93,11 @@ jobs:
       - run:
           name: Run Tests Ember LTS 3.8
           command: <% if (yarn) { %>yarn<% } else { %>npx<% } %> ember try:one ember-lts-3.8 --skip-cleanup=true
+<% if (exam === false) { %>      - store_test_results:
+          path: './reports'
+      - store_artifacts:
+          path: './reports'
+<% } %>
 
   test_release:
     <<: *defaults
@@ -90,6 +108,11 @@ jobs:
       - run:
           name: Run Tests Ember Release
           command: <% if (yarn) { %>yarn<% } else { %>npx<% } %> ember try:one ember-release --skip-cleanup=true
+<% if (exam === false) { %>      - store_test_results:
+          path: './reports'
+      - store_artifacts:
+          path: './reports'
+<% } %>
 
   test_beta:
     <<: *defaults
@@ -100,6 +123,11 @@ jobs:
       - run:
           name: Run Tests Ember Beta
           command: <% if (yarn) { %>yarn<% } else { %>npx<% } %> ember try:one ember-beta --skip-cleanup=true
+<% if (exam === false) { %>      - store_test_results:
+          path: './reports'
+      - store_artifacts:
+          path: './reports'
+<% } %>
 
   test_canary:
     <<: *defaults
@@ -110,6 +138,11 @@ jobs:
       - run:
           name: Run Tests Ember Canary
           command: <% if (yarn) { %>yarn<% } else { %>npx<% } %> ember try:one ember-canary --skip-cleanup=true
+<% if (exam === false) { %>      - store_test_results:
+          path: './reports'
+      - store_artifacts:
+          path: './reports'
+<% } %>
 
   test_default_with_jquery:
     <<: *defaults
@@ -120,6 +153,11 @@ jobs:
       - run:
           name: Run Tests Ember Default With jQuery
           command: <% if (yarn) { %>yarn<% } else { %>npx<% } %> ember try:one ember-default-with-jquery --skip-cleanup=true
+<% if (exam === false) { %>      - store_test_results:
+          path: './reports'
+      - store_artifacts:
+          path: './reports'
+<% } %>
 <% } %>
 workflows:
   version: 2
