@@ -1,10 +1,12 @@
 'use strict';
 
 const getChannelURL = require('ember-source-channel-url');
+const isCI = !!process.env.CI;
 
 module.exports = async function() {
   return {
 <% if (exam) { %>    command: `ember exam --split=${process.env.CIRCLE_NODE_TOTAL} --partition=${Number(process.env.CIRCLE_NODE_INDEX) + 1} --parallel --load-balance`,
+<% } else { %>    command: isCI ? 'ember test --silent --reporter xunit > ./reports/test_results.xml' : 'ember tests',
 <% } if (yarn) { %>    useYarn: true,
 <% } %>    scenarios: [
       {
