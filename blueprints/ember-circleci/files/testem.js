@@ -1,8 +1,8 @@
 const lint = process.env.CI ? 'nolint' : '';
 const testParams = ['hidepassed', lint].filter(Boolean).join('&');
 
-module.exports = {
-  parallel: -1,
+module.exports = {<% if (exam) { %>
+  parallel: -1,<% } %>
   test_page: `tests/index.html?${testParams}`,
   disable_watching: true,
   launch_in_ci: ['Chrome'],

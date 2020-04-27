@@ -45,13 +45,13 @@ After the install dependencies job, the `node_modules` folder is cached by Circl
 
 It will provides a `test_and_build` workflow, as follows:
 
-![checkout code / install dependencies / run lint (js and hbs) / run tests (default)](/doc/workflow-app.png)
+![checkout code / install dependencies / run lint (js and hbs) / run tests (default)](https://raw.githubusercontent.com/GreatWizard/ember-circleci/feat/update-config-latest-lts/doc/workflow-app.png)
 
 ### Configuration for addon
 
 It will provides a `test_matrix` workflow, as follows:
 
-![checkout code / install dependencies / run lint (js and hbs) / run tests (default, LTS 3.4, LTS 3.8, release, beta, canary and default with jquery)](/doc/workflow-addon.png)
+![checkout code / install dependencies / run lint (js and hbs) / run tests (default, LTS 3.12, LTS 3.16, release, beta, canary, default with jquery and classic)](https://raw.githubusercontent.com/GreatWizard/ember-circleci/feat/update-config-latest-lts/doc/workflow-addon.png)
 
 ## Contributing
 

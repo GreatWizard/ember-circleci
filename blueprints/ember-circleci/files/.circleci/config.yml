@@ -69,30 +69,30 @@ jobs:
           path: './reports'
 <% } %>
 <% if (addon) { %>
-  test_lts_3_4:
+  test_lts_3_12:
     <<: *defaults
 <% if (addon && exam) { %>    parallelism: <%= parallel %>
 <% } %>    steps:
       - attach_workspace:
           at: .
       - run:
-          name: Run Tests Ember LTS 3.4
-          command: <% if (yarn) { %>yarn<% } else { %>npx<% } %> ember try:one ember-lts-3.4 --skip-cleanup=true
+          name: Run Tests Ember LTS 3.12
+          command: <% if (yarn) { %>yarn<% } else { %>npx<% } %> ember try:one ember-lts-3.12 --skip-cleanup=true
 <% if (exam === false) { %>      - store_test_results:
           path: './reports'
       - store_artifacts:
           path: './reports'
 <% } %>
 
-  test_lts_3_8:
+  test_lts_3_16:
     <<: *defaults
 <% if (addon && exam) { %>    parallelism: <%= parallel %>
 <% } %>    steps:
       - attach_workspace:
           at: .
       - run:
-          name: Run Tests Ember LTS 3.8
-          command: <% if (yarn) { %>yarn<% } else { %>npx<% } %> ember try:one ember-lts-3.8 --skip-cleanup=true
+          name: Run Tests Ember LTS 3.16
+          command: <% if (yarn) { %>yarn<% } else { %>npx<% } %> ember try:one ember-lts-3.16 --skip-cleanup=true
 <% if (exam === false) { %>      - store_test_results:
           path: './reports'
       - store_artifacts:
@@ -158,6 +158,21 @@ jobs:
       - store_artifacts:
           path: './reports'
 <% } %>
+
+  test_classic:
+    <<: *defaults
+<% if (addon && exam) { %>    parallelism: <%= parallel %>
+<% } %>    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Run Tests Ember Classic
+          command: <% if (yarn) { %>yarn<% } else { %>npx<% } %> ember try:one ember-classic --skip-cleanup=true
+<% if (exam === false) { %>      - store_test_results:
+          path: './reports'
+      - store_artifacts:
+          path: './reports'
+<% } %>
 <% } %>
 workflows:
   version: 2
@@ -173,10 +188,10 @@ workflows:
       - test:
           requires:
             - install_dependencies<% if (addon) { %>
-      - test_lts_3_4:
+      - test_lts_3_12:
           requires:
             - install_dependencies
-      - test_lts_3_8:
+      - test_lts_3_16:
           requires:
             - install_dependencies
       - test_release:
@@ -189,5 +204,8 @@ workflows:
           requires:
             - install_dependencies
       - test_default_with_jquery:
+          requires:
+            - install_dependencies
+      - test_classic:
           requires:
             - install_dependencies<% } %>
