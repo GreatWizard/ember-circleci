@@ -13,7 +13,7 @@ jobs:
       - checkout
 <% if (exam === false) { %>      - run:
           name: Generate reports folder
-          run: mkdir -p ./reports
+          command: mkdir -p ./reports
 <% } %>      - persist_to_workspace:
           root: .
           paths:
