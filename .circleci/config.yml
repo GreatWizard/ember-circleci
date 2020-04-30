@@ -3,35 +3,22 @@ defaults: &defaults
     - image: circleci/node:10-browsers
       environment:
         JOBS: 1
-  working_directory: ~/ember-circleci
+  working_directory: ~/project
 
+orbs:
+  node: circleci/node@2.1.1
 version: 2.1
 
 jobs:
-  checkout_code:
+  prepare:
     <<: *defaults
     steps:
       - checkout
-      - persist_to_workspace:
-          root: .
-          paths:
-            - .
-
-  install_dependencies:
-    <<: *defaults
-    steps:
-      - attach_workspace:
-          at: .
-      - restore_cache:
-          keys:
-            - ember-circleci-node10-v1-{{ checksum "yarn.lock" }}
-      - run:
-          name: Yarn Install
-          command: yarn install --non-interactive --pure-lockfile
-      - save_cache:
-          key: ember-circleci-node10-v1-{{ checksum "yarn.lock" }}
-          paths:
-            - ~/ember-circleci/node_modules
+      - node/install-packages:
+          pkg-manager: "yarn"
+          cache-key: "yarn.lock"
+          cache-version: "v1"
+          include-branch-in-cache-key: false
       - persist_to_workspace:
           root: .
           paths:
@@ -58,13 +45,10 @@ jobs:
 workflows:
   workflow:
     jobs:
-      - checkout_code
-      - install_dependencies:
-          requires:
-            - checkout_code
+      - prepare
       - lint:
           requires:
-            - install_dependencies
+            - prepare
       - test:
           requires:
-            - install_dependencies
+            - prepare
