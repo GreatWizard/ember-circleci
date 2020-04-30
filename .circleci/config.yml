@@ -5,7 +5,8 @@ defaults: &defaults
         JOBS: 1
   working_directory: ~/ember-circleci
 
-version: 2
+version: 2.1
+
 jobs:
   checkout_code:
     <<: *defaults
@@ -55,8 +56,7 @@ jobs:
           command: yarn test
 
 workflows:
-  version: 2
-  test_matrix:
+  workflow:
     jobs:
       - checkout_code
       - install_dependencies:
