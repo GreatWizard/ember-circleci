@@ -5,7 +5,8 @@ defaults: &defaults
         JOBS: 1
   working_directory: ~/<%= name %>
 
-version: 2
+version: 2.1
+
 jobs:
   checkout_code:
     <<: *defaults
@@ -56,126 +57,35 @@ jobs:
 
   test:
     <<: *defaults
-<% if (exam) { %>    parallelism: <%= parallel %>
+<% if (addon) { %>    parameters:
+      scenario:
+        type: enum
+        enum:
+          [
+            "lts-3.12",
+            "lts-3.16",
+            "release",
+            "beta",
+            "canary",
+            "default",
+            "default-with-jquery",
+            "classic",
+          ]
+        default: "default"
+<% }
+if (exam) { %>    parallelism: <%= parallel %>
 <% } %>    steps:
       - attach_workspace:
           at: .
       - run:
-          name: Run Tests
-          command: <% if (addon) { %><% if (yarn) { %>yarn<% } else { %>npx<% } %> ember try:one ember-default --skip-cleanup=true<% } else if (exam) { %><% if (yarn) { %>yarn<% } else { %>npx<% } %> ember exam --split=$CIRCLE_NODE_TOTAL --partition=`expr $CIRCLE_NODE_INDEX + 1` --parallel --load-balance<% } else if (yarn) { %>yarn test<% } else { %>npm run test<% } %>
+          name: Run <% if (addon) { %><< parameters.scenario >> <% } %>Tests
+          command: <% if (addon) { if (yarn) { %>yarn<% } else { %>npx<% } %> ember try:one ember-<< parameters.scenario >> --skip-cleanup=true<% } else if (exam) { if (yarn) { %>yarn<% } else { %>npx<% } %> ember exam --split=$CIRCLE_NODE_TOTAL --partition=`expr $CIRCLE_NODE_INDEX + 1` --parallel --load-balance<% } else if (yarn) { %>yarn test<% } else { %>npm run test<% } %>
 <% if (exam === false) { %>      - store_test_results:
           path: './reports'
       - store_artifacts:
           path: './reports'
-<% } %>
-<% if (addon) { %>
-  test_lts_3_12:
-    <<: *defaults
-<% if (addon && exam) { %>    parallelism: <%= parallel %>
-<% } %>    steps:
-      - attach_workspace:
-          at: .
-      - run:
-          name: Run Tests Ember LTS 3.12
-          command: <% if (yarn) { %>yarn<% } else { %>npx<% } %> ember try:one ember-lts-3.12 --skip-cleanup=true
-<% if (exam === false) { %>      - store_test_results:
-          path: './reports'
-      - store_artifacts:
-          path: './reports'
-<% } %>
-
-  test_lts_3_16:
-    <<: *defaults
-<% if (addon && exam) { %>    parallelism: <%= parallel %>
-<% } %>    steps:
-      - attach_workspace:
-          at: .
-      - run:
-          name: Run Tests Ember LTS 3.16
-          command: <% if (yarn) { %>yarn<% } else { %>npx<% } %> ember try:one ember-lts-3.16 --skip-cleanup=true
-<% if (exam === false) { %>      - store_test_results:
-          path: './reports'
-      - store_artifacts:
-          path: './reports'
-<% } %>
-
-  test_release:
-    <<: *defaults
-<% if (addon && exam) { %>    parallelism: <%= parallel %>
-<% } %>    steps:
-      - attach_workspace:
-          at: .
-      - run:
-          name: Run Tests Ember Release
-          command: <% if (yarn) { %>yarn<% } else { %>npx<% } %> ember try:one ember-release --skip-cleanup=true
-<% if (exam === false) { %>      - store_test_results:
-          path: './reports'
-      - store_artifacts:
-          path: './reports'
-<% } %>
-
-  test_beta:
-    <<: *defaults
-<% if (addon && exam) { %>    parallelism: <%= parallel %>
-<% } %>    steps:
-      - attach_workspace:
-          at: .
-      - run:
-          name: Run Tests Ember Beta
-          command: <% if (yarn) { %>yarn<% } else { %>npx<% } %> ember try:one ember-beta --skip-cleanup=true
-<% if (exam === false) { %>      - store_test_results:
-          path: './reports'
-      - store_artifacts:
-          path: './reports'
-<% } %>
-
-  test_canary:
-    <<: *defaults
-<% if (addon && exam) { %>    parallelism: <%= parallel %>
-<% } %>    steps:
-      - attach_workspace:
-          at: .
-      - run:
-          name: Run Tests Ember Canary
-          command: <% if (yarn) { %>yarn<% } else { %>npx<% } %> ember try:one ember-canary --skip-cleanup=true
-<% if (exam === false) { %>      - store_test_results:
-          path: './reports'
-      - store_artifacts:
-          path: './reports'
-<% } %>
-
-  test_default_with_jquery:
-    <<: *defaults
-<% if (addon && exam) { %>    parallelism: <%= parallel %>
-<% } %>    steps:
-      - attach_workspace:
-          at: .
-      - run:
-          name: Run Tests Ember Default With jQuery
-          command: <% if (yarn) { %>yarn<% } else { %>npx<% } %> ember try:one ember-default-with-jquery --skip-cleanup=true
-<% if (exam === false) { %>      - store_test_results:
-          path: './reports'
-      - store_artifacts:
-          path: './reports'
-<% } %>
-
-  test_classic:
-    <<: *defaults
-<% if (addon && exam) { %>    parallelism: <%= parallel %>
-<% } %>    steps:
-      - attach_workspace:
-          at: .
-      - run:
-          name: Run Tests Ember Classic
-          command: <% if (yarn) { %>yarn<% } else { %>npx<% } %> ember try:one ember-classic --skip-cleanup=true
-<% if (exam === false) { %>      - store_test_results:
-          path: './reports'
-      - store_artifacts:
-          path: './reports'
-<% } %>
 <% } %>
 workflows:
-  version: 2
   <% if (addon) { %>test_matrix:<% } else { %>build_and_test:<% } %>
     jobs:
       - checkout_code
@@ -188,24 +98,38 @@ workflows:
       - test:
           requires:
             - install_dependencies<% if (addon) { %>
-      - test_lts_3_12:
+      - test:
+          name: test_lts_3_12
+          scenario: lts-3.12
           requires:
             - install_dependencies
-      - test_lts_3_16:
+      - test:
+          name: test_lts_3_16
+          scenario: lts-3.16
           requires:
             - install_dependencies
-      - test_release:
+      - test:
+          name: test_release
+          scenario: release
           requires:
             - install_dependencies
-      - test_beta:
+      - test:
+          name: test_beta
+          scenario: beta
           requires:
             - install_dependencies
-      - test_canary:
+      - test:
+          name: test_canary
+          scenario: canary
           requires:
             - install_dependencies
-      - test_default_with_jquery:
+      - test:
+          name: test_default_with_jquery
+          scenario: "default-with-jquery"
           requires:
             - install_dependencies
-      - test_classic:
+      - test:
+          name: test_classic
+          scenario: classic
           requires:
             - install_dependencies<% } %>
