@@ -1,7 +1,6 @@
 /* eslint-env node */
 const path = require("path");
 const { existsSync } = require("fs");
-const stringUtil = require("ember-cli-string-utils");
 
 let hasExam = false,
   isAddon = false;
@@ -16,14 +15,13 @@ module.exports = {
       exam,
       project: {
         root,
-        pkg: { name, keywords = [] }
+        pkg: { keywords = [] }
       }
     } = options;
     isAddon = keywords.includes("ember-addon");
     let hasYarn = existsSync(path.join(root, "yarn.lock"));
     hasExam = exam !== undefined;
     return {
-      name: stringUtil.dasherize(name),
       yarn: hasYarn,
       addon: isAddon,
       exam: hasExam,
