@@ -3,42 +3,26 @@ defaults: &defaults
     - image: circleci/node:10-browsers
       environment:
         JOBS: 1
-  working_directory: ~/<%= name %>
+  working_directory: ~/project
 
+orbs:
+  node: circleci/node@2.1.1
 version: 2.1
 
 jobs:
-  checkout_code:
+  prepare:
     <<: *defaults
     steps:
       - checkout
+      - node/install-packages:
+<% if (yarn) { %>          pkg-manager: "yarn"
+          cache-key: "yarn.lock"<% } %>
+          cache-version: "v1"
+          include-branch-in-cache-key: false
 <% if (exam === false) { %>      - run:
           name: Generate reports folder
-          command: mkdir -p ./reports
+          command: mkdir reports
 <% } %>      - persist_to_workspace:
-          root: .
-          paths:
-            - .
-
-  install_dependencies:
-    <<: *defaults
-    steps:
-      - attach_workspace:
-          at: .
-      - restore_cache:
-          keys:
-            - <%= name %>-node10-v1-{{ checksum "<% if (yarn) { %>yarn.lock<% } else { %>package-lock.json<% } %>" }}
-      - run:<% if (yarn) { %>
-          name: Yarn Install
-          command: yarn install --non-interactive --pure-lockfile<% } else { %> npm config set spin false
-      - run:
-          name: NPM Install
-          command: npm install<% } %>
-      - save_cache:
-          key: <%= name %>-node10-v1-{{ checksum "<% if (yarn) { %>yarn.lock<% } else { %>package-lock.json<% } %>" }}
-          paths:
-            - ~/<%= name %>/node_modules
-      - persist_to_workspace:
           root: .
           paths:
             - .
@@ -81,55 +65,52 @@ if (exam) { %>    parallelism: <%= parallel %>
           name: Run <% if (addon) { %><< parameters.scenario >> <% } %>Tests
           command: <% if (addon) { if (yarn) { %>yarn<% } else { %>npx<% } %> ember try:one ember-<< parameters.scenario >> --skip-cleanup=true<% } else if (exam) { if (yarn) { %>yarn<% } else { %>npx<% } %> ember exam --split=$CIRCLE_NODE_TOTAL --partition=`expr $CIRCLE_NODE_INDEX + 1` --parallel --load-balance<% } else if (yarn) { %>yarn test<% } else { %>npm run test<% } %>
 <% if (exam === false) { %>      - store_test_results:
-          path: './reports'
+          path: "reports"
       - store_artifacts:
-          path: './reports'
+          path: "reports"
 <% } %>
 workflows:
   <% if (addon) { %>test_matrix:<% } else { %>build_and_test:<% } %>
     jobs:
-      - checkout_code
-      - install_dependencies:
-          requires:
-            - checkout_code
+      - prepare
       - lint:
           requires:
-            - install_dependencies
+            - prepare
       - test:
           requires:
-            - install_dependencies<% if (addon) { %>
+            - prepare<% if (addon) { %>
       - test:
           name: test_lts_3_12
           scenario: lts-3.12
           requires:
-            - install_dependencies
+            - prepare
       - test:
           name: test_lts_3_16
           scenario: lts-3.16
           requires:
-            - install_dependencies
+            - prepare
       - test:
           name: test_release
           scenario: release
           requires:
-            - install_dependencies
+            - prepare
       - test:
           name: test_beta
           scenario: beta
           requires:
-            - install_dependencies
+            - prepare
       - test:
           name: test_canary
           scenario: canary
           requires:
-            - install_dependencies
+            - prepare
       - test:
           name: test_default_with_jquery
           scenario: "default-with-jquery"
           requires:
-            - install_dependencies
+            - prepare
       - test:
           name: test_classic
           scenario: classic
           requires:
-            - install_dependencies<% } %>
+            - prepare<% } %>
