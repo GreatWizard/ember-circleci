@@ -3,8 +3,7 @@
 [![CircleCI](https://circleci.com/gh/GreatWizard/ember-circleci.svg?style=shield)](https://circleci.com/gh/GreatWizard/ember-circleci)
 [![Ember Observer Score](https://emberobserver.com/badges/ember-circleci.svg)](https://emberobserver.com/addons/ember-circleci)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Liberapay](http://img.shields.io/liberapay/receives/GreatWizard.svg?logo=liberapay)](https://liberapay.com/GreatWizard/)
-[![Beerpay](https://beerpay.io/GreatWizard/ember-circleci/badge.svg?style=flat)](https://beerpay.io/GreatWizard/ember-circleci)
+[![Liberapay](http://img.shields.io/liberapay/patrons/GreatWizard.svg?logo=liberapay)](https://liberapay.com/GreatWizard/)
 
 CircleCI configuration generator for your Ember projects.
 
