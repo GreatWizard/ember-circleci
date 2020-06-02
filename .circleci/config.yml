@@ -1,3 +1,5 @@
+version: 2.1
+
 defaults: &defaults
   docker:
     - image: circleci/node:10-browsers
@@ -7,7 +9,6 @@ defaults: &defaults
 
 orbs:
   node: circleci/node@2.1.1
-version: 2.1
 
 jobs:
   prepare:
