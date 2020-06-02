@@ -83,34 +83,41 @@ workflows:
           name: test_lts_3_12
           scenario: lts-3.12
           requires:
-            - prepare
+            - lint
+            - test
       - test:
           name: test_lts_3_16
           scenario: lts-3.16
           requires:
-            - prepare
+            - lint
+            - test
       - test:
           name: test_release
           scenario: release
           requires:
-            - prepare
+            - lint
+            - test
       - test:
           name: test_beta
           scenario: beta
           requires:
-            - prepare
+            - lint
+            - test
       - test:
           name: test_canary
           scenario: canary
           requires:
-            - prepare
+            - lint
+            - test
       - test:
           name: test_default_with_jquery
           scenario: "default-with-jquery"
           requires:
-            - prepare
+            - lint
+            - test
       - test:
           name: test_classic
           scenario: classic
           requires:
-            - prepare<% } %>
+            - lint
+            - test<% } %>
