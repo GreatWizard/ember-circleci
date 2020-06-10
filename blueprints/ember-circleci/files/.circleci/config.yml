@@ -3,7 +3,6 @@ defaults: &defaults
     - image: circleci/node:10-browsers
       environment:
         JOBS: 1
-  working_directory: ~/project
 
 orbs:
   node: circleci/node@2.1.1
