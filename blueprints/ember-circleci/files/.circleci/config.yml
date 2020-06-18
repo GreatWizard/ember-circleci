@@ -1,12 +1,13 @@
+version: 2.1
+
+orbs:
+  node: circleci/node@2.1.1
+
 defaults: &defaults
   docker:
     - image: circleci/node:10-browsers
       environment:
         JOBS: 1
-
-orbs:
-  node: circleci/node@2.1.1
-version: 2.1
 
 jobs:
   prepare:
@@ -62,7 +63,7 @@ if (exam) { %>    parallelism: <%= parallel %>
           at: .
       - run:
           name: Run <% if (addon) { %><< parameters.scenario >> <% } %>Tests
-          command: <% if (addon) { if (yarn) { %>yarn<% } else { %>npx<% } %> ember try:one ember-<< parameters.scenario >> --skip-cleanup=true<% } else if (exam) { if (yarn) { %>yarn<% } else { %>npx<% } %> ember exam --split=$CIRCLE_NODE_TOTAL --partition=`expr $CIRCLE_NODE_INDEX + 1` --parallel --load-balance<% } else if (yarn) { %>yarn test<% } else { %>npm run test<% } %>
+          command: <% if (addon) { if (yarn) { %>yarn<% } else { %>npx<% } %> ember try:one ember-<< parameters.scenario >> --skip-cleanup=true<% } else if (exam) { if (yarn) { %>yarn<% } else { %>npx<% } %> ember exam --split=$CIRCLE_NODE_TOTAL --partition=`expr $CIRCLE_NODE_INDEX + 1` --parallel --load-balance<% } else if (yarn) { %>yarn test:ember<% } else { %>npm run test:ember<% } %>
 <% if (exam === false) { %>      - store_test_results:
           path: "reports"
       - store_artifacts:

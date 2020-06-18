@@ -44,6 +44,7 @@ if (yarn) { %>    useYarn: true,
       },
       {
         name: 'ember-canary',
+        allowedToFail: true,
         npm: {
           devDependencies: {
             'ember-source': await getChannelURL('canary')
