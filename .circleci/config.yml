@@ -1,14 +1,13 @@
 version: 2.1
 
+orbs:
+  node: circleci/node@2.1.1
+
 defaults: &defaults
   docker:
     - image: circleci/node:10-browsers
       environment:
         JOBS: 1
-  working_directory: ~/project
-
-orbs:
-  node: circleci/node@2.1.1
 
 jobs:
   prepare:
@@ -41,7 +40,7 @@ jobs:
           at: .
       - run:
           name: Run Tests
-          command: yarn test
+          command: yarn test:ember
 
 workflows:
   workflow:
