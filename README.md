@@ -38,7 +38,7 @@ xUnit generates an xml file and expose it to CircleCI, that way it can gave a qu
 
 After the install dependencies job, the `node_modules` folder is cached by CircleCI to speed up the next runs.
 
-:bulb: If you later need to regenerate the `.circleci/config.yml` file, run `ember g ember-circle-ci [--exam=X]`.
+:bulb: If you later need to regenerate the `.circleci/config.yml` file, run `ember g ember-circleci [--exam=X]`.
 
 ### Configuration for application
 
