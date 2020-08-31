@@ -32,6 +32,7 @@ This addon generates the `.circleci/config.yml` file.
 Lint and Tests jobs are started as parallel jobs.
 
 If you activate ember-exam, it provides the ability to split, parallelize, and load-balance your test suite.
+For an app, built assets will build once and then be re-used during parallelization to further speed up builds.
 
 If ember-exam is not activated, it provides reports of the tests by using xUnit.
 xUnit generates an xml file and expose it to CircleCI, that way it can gave a quick overview of the failing tests
