@@ -19,7 +19,10 @@ jobs:
           cache-key: "yarn.lock"<% } %>
           cache-version: "v1"
           include-branch-in-cache-key: false
-<% if (exam === false) { %>      - run:
+<% if (exam && !addon) { %>      - run:
+          name: Prebuild Ember app for tests
+          command: yarn ember build --environment=testing
+<% } else { %>      - run:
           name: Generate reports folder
           command: mkdir reports
 <% } %>      - persist_to_workspace:
@@ -63,7 +66,7 @@ if (exam) { %>    parallelism: <%= parallel %>
           at: .
       - run:
           name: Run <% if (addon) { %><< parameters.scenario >> <% } %>Tests
-          command: <% if (addon) { if (yarn) { %>yarn<% } else { %>npx<% } %> ember try:one ember-<< parameters.scenario >> --skip-cleanup=true<% } else if (exam) { if (yarn) { %>yarn<% } else { %>npx<% } %> ember exam --split=$CIRCLE_NODE_TOTAL --partition=`expr $CIRCLE_NODE_INDEX + 1` --parallel --load-balance<% } else if (yarn) { %>yarn test:ember<% } else { %>npm run test:ember<% } %>
+          command: <% if (addon) { if (yarn) { %>yarn<% } else { %>npx<% } %> ember try:one ember-<< parameters.scenario >> --skip-cleanup=true<% } else if (exam) { if (yarn) { %>yarn<% } else { %>npx<% } %> ember exam --path=dist --split=$CIRCLE_NODE_TOTAL --partition=`expr $CIRCLE_NODE_INDEX + 1` --parallel --load-balance<% } else if (yarn) { %>yarn test:ember<% } else { %>npm run test:ember<% } %>
 <% if (exam === false) { %>      - store_test_results:
           path: "reports"
       - store_artifacts:
