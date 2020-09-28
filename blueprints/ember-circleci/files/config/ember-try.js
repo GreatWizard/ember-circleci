@@ -27,6 +27,14 @@ if (yarn) { %>    useYarn: true,
         }
       },
       {
+        name: 'ember-lts-3.20',
+        npm: {
+          devDependencies: {
+            'ember-source': '~3.20.5'
+          }
+        }
+      },
+      {
         name: 'ember-release',
         npm: {
           devDependencies: {
@@ -44,17 +52,10 @@ if (yarn) { %>    useYarn: true,
       },
       {
         name: 'ember-canary',
-        allowedToFail: true,
         npm: {
           devDependencies: {
             'ember-source': await getChannelURL('canary')
           }
-        }
-      },
-      {
-        name: 'ember-default',
-        npm: {
-          devDependencies: {}
         }
       },
       {
@@ -66,7 +67,7 @@ if (yarn) { %>    useYarn: true,
         },
         npm: {
           devDependencies: {
-            '@ember/jquery': '^0.5.1'
+            '@ember/jquery': '^1.1.0'
           }
         }
       },
