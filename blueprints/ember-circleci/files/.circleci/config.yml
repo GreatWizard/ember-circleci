@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  node: circleci/node@2.1.1
+  node: circleci/node@4.0.1
 
 defaults: &defaults
   docker:
@@ -15,8 +15,7 @@ jobs:
     steps:
       - checkout
       - node/install-packages:
-<% if (yarn) { %>          pkg-manager: "yarn"
-          cache-key: "yarn.lock"<% } %>
+<% if (yarn) { %>          pkg-manager: "yarn"<% } %>
           cache-version: "v1"
           include-branch-in-cache-key: false
 <% if (exam && !addon) { %>      - run:
@@ -51,6 +50,7 @@ jobs:
           [
             "lts-3.12",
             "lts-3.16",
+            "lts-3.20",
             "release",
             "beta",
             "canary",
@@ -64,10 +64,25 @@ if (exam) { %>    parallelism: <%= parallel %>
 <% } %>    steps:
       - attach_workspace:
           at: .
-      - run:
-          name: Run <% if (addon) { %><< parameters.scenario >> <% } %>Tests
-          command: <% if (addon) { if (yarn) { %>yarn<% } else { %>npx<% } %> ember try:one ember-<< parameters.scenario >> --skip-cleanup=true<% } else if (exam) { if (yarn) { %>yarn<% } else { %>npx<% } %> ember exam --path=dist --split=$CIRCLE_NODE_TOTAL --partition=`expr $CIRCLE_NODE_INDEX + 1` --parallel --load-balance<% } else if (yarn) { %>yarn test:ember<% } else { %>npm run test:ember<% } %>
-<% if (exam === false) { %>      - store_test_results:
+<% if (addon) { %>      - when:
+          condition:
+            equal: [ "default", << parameters.scenario >> ]
+          steps:
+            - run:
+                name: Run << parameters.scenario >> Tests
+                command: <% if (yarn) { %>yarn<% } else { %>npm run<% } %> test:ember
+      - when:
+          condition:
+            not:
+              equal: [ "default", << parameters.scenario >> ]
+          steps:
+            - run:
+                name: Run << parameters.scenario >> Tests
+                command: <% if (yarn) { %>yarn <% } else { %>npm <% } %><% if (addon) { %>ember try:one ember-<< parameters.scenario >> --skip-cleanup=true<% } else if (exam) { %>ember exam --path=dist --split=$CIRCLE_NODE_TOTAL --partition=`expr $CIRCLE_NODE_INDEX + 1` --parallel --load-balance<% } else if (yarn) { %>test:ember<% } else { %>run test:ember<% } %>
+<% } else { %>      - run:
+          name: Run Tests
+          command: <% if (yarn) { %>yarn <% } else { %>npm <% } %><% if (exam) { %>ember exam --path=dist --split=$CIRCLE_NODE_TOTAL --partition=`expr $CIRCLE_NODE_INDEX + 1` --parallel --load-balance<% } else { if (!yarn) { %>run <% } %>test:ember<% } %>
+<% } if (exam === false) { %>      - store_test_results:
           path: "reports"
       - store_artifacts:
           path: "reports"
@@ -91,6 +106,12 @@ workflows:
       - test:
           name: test_lts_3_16
           scenario: lts-3.16
+          requires:
+            - lint
+            - test
+      - test:
+          name: test_lts_3_20
+          scenario: lts-3.20
           requires:
             - lint
             - test

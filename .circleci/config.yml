@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  node: circleci/node@2.1.1
+  node: circleci/node@4.0.1
 
 defaults: &defaults
   docker:
@@ -16,9 +16,11 @@ jobs:
       - checkout
       - node/install-packages:
           pkg-manager: "yarn"
-          cache-key: "yarn.lock"
           cache-version: "v1"
           include-branch-in-cache-key: false
+      - run:
+          name: Generate reports folder
+          command: mkdir reports
       - persist_to_workspace:
           root: .
           paths:
@@ -29,6 +31,9 @@ jobs:
     steps:
       - attach_workspace:
           at: .
+      - run:
+          name: Lint Handlebars
+          command: yarn lint:hbs
       - run:
           name: Lint JavaScript
           command: yarn lint:js
@@ -41,9 +46,13 @@ jobs:
       - run:
           name: Run Tests
           command: yarn test:ember
+      - store_test_results:
+          path: "reports"
+      - store_artifacts:
+          path: "reports"
 
 workflows:
-  workflow:
+  build_and_test:
     jobs:
       - prepare
       - lint:
