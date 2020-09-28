@@ -21,7 +21,7 @@ jobs:
 <% if (exam && !addon) { %>      - run:
           name: Prebuild Ember app for tests
           command: yarn ember build --environment=testing
-<% } else { %>      - run:
+<% } else if (exam === false) { %>      - run:
           name: Generate reports folder
           command: mkdir reports
 <% } %>      - persist_to_workspace:
