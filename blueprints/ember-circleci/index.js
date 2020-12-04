@@ -41,5 +41,11 @@ module.exports = {
     if (isAddon && hasExam) {
       return this.addPackageToProject("ember-exam");
     }
+
+    let travisFile = `${this.project.root}/.travis.yml`
+
+    if (existsSync(travisFile)) {
+      unlinkSync(travisFile)
+    }
   }
 };
