@@ -1,6 +1,6 @@
 /* eslint-env node */
 const path = require("path");
-const { existsSync } = require("fs");
+const { existsSync, unlinkSync } = require("fs");
 
 let hasExam = false,
   isAddon = false;
@@ -40,6 +40,12 @@ module.exports = {
   afterInstall() {
     if (isAddon && hasExam) {
       return this.addPackageToProject("ember-exam");
+    }
+
+    let travisFile = `${this.project.root}/.travis.yml`
+
+    if (existsSync(travisFile)) {
+      unlinkSync(travisFile)
     }
   }
 };
