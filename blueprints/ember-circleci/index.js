@@ -1,12 +1,12 @@
 /* eslint-env node */
-const path = require("path");
-const { existsSync } = require("fs");
+const path = require('path');
+const { existsSync } = require('fs');
 
 let hasExam = false,
   isAddon = false;
 
 module.exports = {
-  description: "Ember-CircleCI blueprint",
+  description: 'Ember-CircleCI blueprint',
 
   normalizeEntityName() {},
 
@@ -15,31 +15,31 @@ module.exports = {
       exam,
       project: {
         root,
-        pkg: { keywords = [] }
-      }
+        pkg: { keywords = [] },
+      },
     } = options;
-    isAddon = keywords.includes("ember-addon");
-    let hasYarn = existsSync(path.join(root, "yarn.lock"));
+    isAddon = keywords.includes('ember-addon');
+    let hasYarn = existsSync(path.join(root, 'yarn.lock'));
     hasExam = exam !== undefined;
     return {
       yarn: hasYarn,
       addon: isAddon,
       exam: hasExam,
-      parallel: !isNaN(Number.parseInt(exam)) ? exam : 4
+      parallel: !isNaN(Number.parseInt(exam)) ? exam : 4,
     };
   },
 
   files() {
     let files = this._super.files.apply(this, arguments);
     if (!isAddon) {
-      files = files.filter(file => file !== "config/ember-try.js");
+      files = files.filter((file) => file !== 'config/ember-try.js');
     }
     return files;
   },
 
   afterInstall() {
     if (isAddon && hasExam) {
-      return this.addPackageToProject("ember-exam");
+      return this.addPackageToProject('ember-exam');
     }
-  }
+  },
 };
