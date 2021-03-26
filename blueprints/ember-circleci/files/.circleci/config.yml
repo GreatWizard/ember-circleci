@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  node: circleci/node@4.0.1
+  node: circleci/node@4.2.0
 
 defaults: &defaults
   docker:
@@ -48,7 +48,6 @@ jobs:
         type: enum
         enum:
           [
-            "lts-3.12",
             "lts-3.16",
             "lts-3.20",
             "release",
@@ -97,12 +96,6 @@ workflows:
       - test:
           requires:
             - prepare<% if (addon) { %>
-      - test:
-          name: test_lts_3_12
-          scenario: lts-3.12
-          requires:
-            - lint
-            - test
       - test:
           name: test_lts_3_16
           scenario: lts-3.16
