@@ -12,7 +12,10 @@
     "url": "git://github.com/GreatWizard/ember-circleci.git"
   },
   "license": "MIT",
-  "author": "Guillaume Gérard <guillaume.gerard88@gmail.com>",
+  "author": {
+    "name": "Guillaume Gérard",
+    "url": "https://guillaume.sh"
+  },
   "directories": {
     "doc": "doc",
     "test": "tests"
