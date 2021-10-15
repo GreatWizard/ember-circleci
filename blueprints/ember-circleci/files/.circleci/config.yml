@@ -1,140 +1,117 @@
 version: 2.1
 
 orbs:
-  node: circleci/node@4.2.0
-
-defaults: &defaults
-  docker:
-    - image: circleci/node:10-browsers
-      environment:
-        JOBS: 1
+  node: circleci/node@4.7.0
 
 jobs:
-  prepare:
-    <<: *defaults
+  test:
+    docker:
+      - image: circleci/node:12-browsers
+    steps:
+      - checkout
+      - node/install-packages<% if (yarn) { %>:
+          pkg-manager: yarn<% } %>
+      - run:
+          name: Lint
+          command: <%= yarn ? 'yarn' : 'npm run' %> lint
+      - run:
+          name: Run Tests
+          command: <%= yarn ? 'yarn' : 'npm run' %> <%= exam ? 'ember exam --split=$CIRCLE_NODE_TOTAL --partition=`expr $CIRCLE_NODE_INDEX + 1` --parallel --load-balance' : 'test:ember' %>
+<% if (addon) { %>
+  floating:
+    docker:
+      - image: circleci/node:12-browsers
     steps:
       - checkout
       - node/install-packages:
-<% if (yarn) { %>          pkg-manager: "yarn"<% } %>
-          cache-version: "v1"
-          include-branch-in-cache-key: false
-<% if (exam && !addon) { %>      - run:
-          name: Prebuild Ember app for tests
-          command: yarn ember build --environment=testing
-<% } else if (exam === false) { %>      - run:
-          name: Generate reports folder
-          command: mkdir reports
-<% } %>      - persist_to_workspace:
-          root: .
-          paths:
-            - .
-
-  lint:
-    <<: *defaults
-    steps:
-      - attach_workspace:
-          at: .
+<% if (yarn) { %>          pkg-manager: yarn<% } %>
+          override-ci-command: <%= yarn ? 'yarn install --no-lockfile' : 'npm install --no-shrinkwrap' %>
       - run:
-          name: Lint Handlebars
-          command: <% if (yarn) { %>yarn<% } else { %>npm run<% } %> lint:hbs
-      - run:
-          name: Lint JavaScript
-          command: <% if (yarn) { %>yarn<% } else { %>npm run<% } %> lint:js
+          name: Run Tests
+          command: <%= yarn ? 'yarn' : 'npm run' %> <%= exam ? 'ember exam --split=$CIRCLE_NODE_TOTAL --partition=`expr $CIRCLE_NODE_INDEX + 1` --parallel --load-balance' : 'test:ember' %>
 
-  test:
-    <<: *defaults
-<% if (addon) { %>    parameters:
+  try-scenarios:
+    docker:
+      - image: circleci/node:12-browsers
+    parameters:
       scenario:
         type: enum
         enum:
           [
-            "lts-3.16",
-            "lts-3.20",
-            "release",
-            "beta",
-            "canary",
-            "default",
-            "default-with-jquery",
-            "classic",
+            "ember-lts-3.24",
+            "ember-lts-3.28",
+            "ember-release",
+            "ember-beta",
+            "ember-canary",
+            "ember-classic",
+            "ember-default-with-jquery",
+            "embroider-safe",
+            "embroider-optimized",
           ]
-        default: "default"
-<% }
-if (exam) { %>    parallelism: <%= parallel %>
+<% if (exam) { %>    parallelism: <%= parallel %>
 <% } %>    steps:
-      - attach_workspace:
-          at: .
-<% if (addon) { %>      - when:
-          condition:
-            equal: [ "default", << parameters.scenario >> ]
-          steps:
-            - run:
-                name: Run << parameters.scenario >> Tests
-                command: <% if (yarn) { %>yarn<% } else { %>npm run<% } %> test:ember
-      - when:
-          condition:
-            not:
-              equal: [ "default", << parameters.scenario >> ]
-          steps:
-            - run:
-                name: Run << parameters.scenario >> Tests
-                command: <% if (yarn) { %>yarn <% } else { %>npm <% } %><% if (addon) { %>ember try:one ember-<< parameters.scenario >> --skip-cleanup=true<% } else if (exam) { %>ember exam --path=dist --split=$CIRCLE_NODE_TOTAL --partition=`expr $CIRCLE_NODE_INDEX + 1` --parallel --load-balance<% } else if (yarn) { %>test:ember<% } else { %>run test:ember<% } %>
-<% } else { %>      - run:
-          name: Run Tests
-          command: <% if (yarn) { %>yarn <% } else { %>npm <% } %><% if (exam) { %>ember exam --path=dist --split=$CIRCLE_NODE_TOTAL --partition=`expr $CIRCLE_NODE_INDEX + 1` --parallel --load-balance<% } else { if (!yarn) { %>run <% } %>test:ember<% } %>
-<% } if (exam === false) { %>      - store_test_results:
+      - checkout
+      - node/install-packages<% if (yarn) { %>:
+          pkg-manager: yarn<% } %>
+<% if (!exam) { %>      - run:
+          name: Generate reports folder
+          command: mkdir reports<% } %>
+      - run:
+          name: Run << parameters.scenario >> Tests
+          command: <%= yarn ? 'yarn' : 'npm run' %> ember try:one << parameters.scenario >> --skip-cleanup=true
+<% if (!exam) { %>      - store_test_results:
           path: "reports"
-      - store_artifacts:
-          path: "reports"
-<% } %>
+<% }
+} %>
 workflows:
-  <% if (addon) { %>test_matrix:<% } else { %>build_and_test:<% } %>
+  tests:
     jobs:
-      - prepare
-      - lint:
+      - test<% if (addon) { %>
+      - floating:
           requires:
-            - prepare
-      - test:
-          requires:
-            - prepare<% if (addon) { %>
-      - test:
-          name: test_lts_3_16
-          scenario: lts-3.16
-          requires:
-            - lint
             - test
-      - test:
-          name: test_lts_3_20
-          scenario: lts-3.20
+      - try-scenarios:
+          name: test-ember-lts-3.24
+          scenario: ember-lts-3.24
           requires:
-            - lint
             - test
-      - test:
-          name: test_release
-          scenario: release
+      - try-scenarios:
+          name: test-ember-lts-3.28
+          scenario: ember-lts-3.28
           requires:
-            - lint
             - test
-      - test:
-          name: test_beta
-          scenario: beta
+      - try-scenarios:
+          name: test-ember-release
+          scenario: ember-release
           requires:
-            - lint
             - test
-      - test:
-          name: test_canary
-          scenario: canary
+      - try-scenarios:
+          name: test-ember-beta
+          scenario: ember-beta
           requires:
-            - lint
             - test
-      - test:
-          name: test_default_with_jquery
-          scenario: "default-with-jquery"
+      - try-scenarios:
+          name: test-ember-canary
+          scenario: ember-canary
           requires:
-            - lint
             - test
-      - test:
-          name: test_classic
-          scenario: classic
+      - try-scenarios:
+          name: test-ember-classic
+          scenario: ember-classic
           requires:
-            - lint
+            - test
+      - try-scenarios:
+          name: test-ember-default-with-jquery
+          scenario: ember-default-with-jquery
+          requires:
+            - test
+      - try-scenarios:
+          name: test-embroider-safe
+          scenario: embroider-safe
+          requires:
+            - test
+      - try-scenarios:
+          name: test-embroider-optimized
+          scenario: embroider-optimized
+          requires:
             - test<% } %>
