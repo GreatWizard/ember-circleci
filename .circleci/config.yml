@@ -1,63 +1,115 @@
 version: 2.1
 
 orbs:
-  node: circleci/node@4.2.0
-
-defaults: &defaults
-  docker:
-    - image: circleci/node:10-browsers
-      environment:
-        JOBS: 1
+  node: circleci/node@4.7.0
 
 jobs:
-  prepare:
-    <<: *defaults
+  test:
+    docker:
+      - image: circleci/node:12-browsers
     steps:
       - checkout
       - node/install-packages:
-          pkg-manager: "yarn"
-          cache-version: "v1"
-          include-branch-in-cache-key: false
+          pkg-manager: yarn
       - run:
-          name: Generate reports folder
-          command: mkdir reports
-      - persist_to_workspace:
-          root: .
-          paths:
-            - .
-
-  lint:
-    <<: *defaults
-    steps:
-      - attach_workspace:
-          at: .
-      - run:
-          name: Lint Handlebars
-          command: yarn lint:hbs
-      - run:
-          name: Lint JavaScript
-          command: yarn lint:js
-
-  test:
-    <<: *defaults
-    steps:
-      - attach_workspace:
-          at: .
+          name: Lint
+          command: yarn lint
       - run:
           name: Run Tests
           command: yarn test:ember
+
+  floating:
+    docker:
+      - image: circleci/node:12-browsers
+    steps:
+      - checkout
+      - node/install-packages:
+          pkg-manager: yarn
+          override-ci-command: yarn install --no-lockfile
+      - run:
+          name: Run Tests
+          command: yarn test:ember
+
+  try-scenarios:
+    docker:
+      - image: circleci/node:12-browsers
+    parameters:
+      scenario:
+        type: enum
+        enum:
+          [
+            "ember-lts-3.24",
+            "ember-lts-3.28",
+            "ember-release",
+            "ember-beta",
+            "ember-canary",
+            "ember-classic",
+            "ember-default-with-jquery",
+            "embroider-safe",
+            "embroider-optimized",
+          ]
+    steps:
+      - checkout
+      - node/install-packages:
+          pkg-manager: yarn
+      - run:
+          name: Generate reports folder
+          command: mkdir reports
+      - run:
+          name: Run << parameters.scenario >> Tests
+          command: yarn ember try:one << parameters.scenario >> --skip-cleanup=true
       - store_test_results:
-          path: "reports"
-      - store_artifacts:
           path: "reports"
 
 workflows:
-  build_and_test:
+  tests:
     jobs:
-      - prepare
-      - lint:
+      - test
+      - floating:
           requires:
-            - prepare
-      - test:
+            - test
+      - try-scenarios:
+          name: test-ember-lts-3.24
+          scenario: ember-lts-3.24
           requires:
-            - prepare
+            - test
+      - try-scenarios:
+          name: test-ember-lts-3.28
+          scenario: ember-lts-3.28
+          requires:
+            - test
+      - try-scenarios:
+          name: test-ember-release
+          scenario: ember-release
+          requires:
+            - test
+      - try-scenarios:
+          name: test-ember-beta
+          scenario: ember-beta
+          requires:
+            - test
+      - try-scenarios:
+          name: test-ember-canary
+          scenario: ember-canary
+          requires:
+            - test
+      - try-scenarios:
+          name: test-ember-classic
+          scenario: ember-classic
+          requires:
+            - test
+      - try-scenarios:
+          name: test-ember-default-with-jquery
+          scenario: ember-default-with-jquery
+          requires:
+            - test
+      - try-scenarios:
+          name: test-embroider-safe
+          scenario: embroider-safe
+          requires:
+            - test
+      - try-scenarios:
+          name: test-embroider-optimized
+          scenario: embroider-optimized
+          requires:
+            - test
